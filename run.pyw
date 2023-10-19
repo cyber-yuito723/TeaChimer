@@ -22,9 +22,12 @@ sys.dont_write_bytecode = True
 
 import tkinter as tk
 import tkinter.ttk as ttk
+import time
 import winsound
 import datetime
 import settings
+import subprocess
+import schedule
 
 class Main():
     def __init__(self, master):
@@ -450,3 +453,19 @@ version = "v1.1.0"
 edition = "normal"
 app = Main(root)
 root.mainloop()
+
+def upload():
+    current_time = datetime.datetime.now().time()
+    
+    # Define the time you want the file to run
+    target_time = datetime.time(18, 00)  # Replace with your desired time (10:00 AM in this case)
+    
+    if current_time.hour == target_time.hour and current_time.minute == target_time.minute:
+        subprocess.run(["python", "upload-logs.py"])
+
+# Schedule the job to check and run at your specified time
+schedule.every(1).minutes.do(upload)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
